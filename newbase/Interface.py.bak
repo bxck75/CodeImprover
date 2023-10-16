@@ -1,0 +1,56 @@
+#protected
+import os
+# protected
+from pathlib import Path
+import re
+import sys
+from typing import Optional
+#TODOS:
+# - always a mandatory comment block for todo's at the top of each script
+# - begin developing and improving a Interface class here.
+#- it handles visuaising all data and history that processes in the project product and gets gathered
+#- it should generate a  central dashboard Panel with statusbars, diagrams, graphs and fancy data tables etc 
+#- it needs to create a visualy stunning dashboard Panel that shows the projects workflow 
+# - it needs to be the place to go to when hunting buggs or solving bottlenecks
+#- On request it should be able to produce a save media of its data or history
+
+
+class Interface():
+
+    version: Optional[float] = (0.1) 
+    path: Optional[str] = None
+    log_file: Optional[str] = f"{str(Path(__file__).parent)}/Interface_Log.txt"
+
+    """ Mandatory  version, path, log_file and docstring above init with a short description"""
+    def __init__(self):
+        self.name = "Interface";
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    f'''
+    # -aways a mandatory comment block for description ,Usage, Use cases and proposed features at the bottom
+    Description:
+        <here the assistant describes script working>
+    Usage:
+        <here the assistant describes script usage>
+    Predicted use cases:
+        <here the assistant describes use cases>
+    Proposed features:
+        <here the assistant proposes features>
+    '''

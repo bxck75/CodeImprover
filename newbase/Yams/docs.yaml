@@ -1,0 +1,20 @@
+    Analizer: analizes scripts 
+    Communicator:  communicates with api's
+    DataHandler: handes incomming and outgoing data
+    Debugger:  debugs code improved or other
+    General : contains common classes and methods 
+    Helper: contains helper methods
+    Improver: improves code blocks
+    Logger: logs everything from everywhere 
+    Monitor: monitors the core processes 
+    Splitter: splits scripts into chunks
+    Merger: merges chunks into scripts
+    Prompts: has all the Ai prompts
+  - Modules: contains all the modules of this project
+  - Tests: contains the testscripts
+  - assets: contain all kids of stuff
+  Modules: in here is where all modules of the project live
+docs.yaml: this file
+Interface:  main interface script
+
+# ProfGPT_Helper_prompt: AI helpers profGPT

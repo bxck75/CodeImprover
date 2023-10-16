@@ -1,0 +1,26 @@
+
+
+    """input output schema"""
+    # Define the input and output schema for the tool
+    input_schema = ToolInputSchema(input_param=str)
+    output_schema = ToolOutputSchema(output=str)
+
+    """toolfrom function"""
+    # Create a tool from the function with the input and output schema
+    my_tool = StructuredTool.from_function(my_function, input_schema=input_schema, output_schema=output_schema)
+    # Invoke the tool with input values
+    input_values = {"input_param": "example"}
+    output = my_tool(input_values)
+    # Access the output value
+    output_value = output["output"]
+
+    """ tool from class"""
+    # Create a tool from the class with the input and output schema
+    my_tool = StructuredTool.from_class(MyClass, input_schema=input_schema, output_schema=output_schema)
+    # Create an instance of the class with input values
+    input_values = {"input_param": "example"}
+    my_instance = MyClass(**input_values)
+    # Invoke the tool with the instance
+    output = my_tool(my_instance)
+    # Access the output value
+    output_value = output["output"]

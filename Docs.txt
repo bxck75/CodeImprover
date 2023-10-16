@@ -1,0 +1,90 @@
+"""
+The `CodeImprover` class is responsible for improving and upgrading Python code. 
+It provides functionalities to read code, save changes, check syntax errors, 
+format code, and generate a code coverage report.
+It also includes a method to improve code in a given file or all files in a given directory.
+
+TODOS:
+- Add support for improving all files in a given directory.
+- Add the version to the new file name suffix.
+- Add a method to check for code syntax errors using the compile function.
+- Add a method to format code using autopep8 or black.
+- Add a method to generate a code coverage report."""
+- Refactor the `improve_code` method into smaller, more specialized methods. For example, you could have a `get_file_paths` method that handles getting a list of file paths based on user input, and a `improve_file` method that handles improving a single file.
+- Instead of hardcoding the log file path, you could add it as an argument when initializing the class. This would make it more flexible and allow users to specify their own log file paths.
+- Consider adding support for other code formatters, such as Black, in addition to autopep8.
+- Add a method to run unit tests on the improved code, ensuring that it still works as expected.
+- Add support for specifying the language model to use, as you proposed in the 'Proposed extra features' section.
+- Add support for customizing the code improvement prompt, allowing users to tailor it to their preferences.
+- Use the `logging` module instead of printing to the console. This will make it easier to debug and maintain the code.
+- Add error handling to handle cases where the language model fails to generate an improved version of the code.
+- Consider adding support for other programming languages besides Python.
+- Add support for generating a diff between the original and improved versions of the code.
+- Add support for generating a report summarizing the improvements made by the language model.
+"""
+
+
+coverage infos:
+morfs: Iterable[TMorf] | None = None,
+show_missing: bool | None = None,
+ignore_errors: bool | None = None,
+file: IO[str] | None = None,
+omit: str | List[str] | None = None,
+include: str | List[str] | None = None,
+skip_covered: bool | None = None,
+contexts: List[str] | None = None,
+skip_empty: bool | None = None,
+precision: int | None = None,
+sort: str | None = None,
+output_format: str | None = None 
+
+
+
+
+Example Usage:
+    improver = CodeImprover()
+    improver.improve_code()
+
+Main functionalities:
+- Reading code from a text string using a specified code mark.
+- Saving changes made to the code to a log file.
+- Checking syntax errors in the code.
+- Formatting the code using the `autopep8` library.
+- Generating a code coverage report using the `coverage` library.
+- Improving code in a given file or all files in a given directory.
+
+Methods:
+- read_code(text: str, code_mark: str) -> str: Reads code from a text string using a specified code mark.
+- save_changes(text: str) -> None: Saves changes made to the code to a log file.
+- check_syntax_errors(code: str) -> None: Checks syntax errors in the code.
+- format_code(code: str) -> str: Formats the code using the `autopep8` library.
+- generate_coverage_report(code: str) -> None: Generates a code coverage report using the `coverage` library.
+- improve_code(path: Optional[str] = None) -> None: Improves code in a given file or all files in a given directory.
+- pick_random_provider() -> str: Picks a random provider from a list of providers.
+
+Fields:
+- version: Optional[float] = 2.8: The version of the code improver.
+- script_path: Optional[str] = None: The path of the script to be improved.
+- log_file: Optional[str] = f"{str(Path(__file__).parent)}/changes.txt": The path of the log file to save the changes.
+- python_mark: Optional[str] = r"```(python|py|)\n(?P<code>[\s\S]+?)\n```": The regular expression pattern to match the code mark in the text.
+"""
+
+f'''
+Description:
+A pragmatic, procedural, and organized code analyzing, improving and upgrading agent.
+
+Usage:
+- Run the script.
+- Enter the path of the file you want to improve when prompted.
+- The script will use the language model to generate an improved version of the code.
+- The improved code will be saved in a new file with a suffix "_generated_improvement" in the file name.
+
+Predicted use cases:
+- Improving code by analyzing and providing automated suggestions.
+- Learning and understanding the improvements made by the language model.
+
+Proposed extra features:
+- Add support for specifying the language model to use.
+- Add support for customizing the code improvement prompt.
+- Add a method to run unit tests for
+'''
