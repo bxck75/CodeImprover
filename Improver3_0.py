@@ -74,7 +74,8 @@ class CodeImprover:
             path = self.script_path
         else:
             path = input("Enter the path of the file you want to improve:(enter to self-improve) ")
-       
+            path = path.replace("'","") # beeing able to drag a file in the terminal and not get a invalid path
+
 # I fixed it yiiieehaaaa!
         # BELLOW IS THE UGLIEST IF ELSE STATEMEMT 
         if path != "":                # I HAVE EVER SEEN ALL BECAUSE  
