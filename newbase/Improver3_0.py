@@ -21,7 +21,7 @@ import coverage
 # TODO: after improving a script thre should be a check to read the imptoved script and ee if it was reaaly update
 # TODO: More advanced code analysis and recommendations.
 # TODO: Integration with version control systems.
-
+ 
 class CodeImprover:
     version: Optional[float] = 2.9
     script_path: Optional[str] = None
