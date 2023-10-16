@@ -4,9 +4,10 @@ from pathlib import Path
 import re
 import random
 import os
+from g4f import ChatCompletion,models,Provider
 from glob import glob
 from typing import Optional
-from supporting.gpt4free.g4f import ChatCompletion, models, Provider
+from langchain_g4f import G4FLLM
 import autopep8
 import tempfile
 import coverage
@@ -144,7 +145,7 @@ class CodeImprover:
 
                     response = []
                     model = models.gpt_35_turbo
-                    for chunk in ChatCompletion.create(
+                    for chunk in ChatCompletion(
                         model=model,
                         messages=[
                             {"role": "system", "content": prompt},

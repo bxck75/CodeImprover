@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import re
 import sys
-
+from typing import Optional
 #TODOS:
 # - always a mandatory comment block for todo's at the top of each script
 # - begin developing and improving a general logger class here.
