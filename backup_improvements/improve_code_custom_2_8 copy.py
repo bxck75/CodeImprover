@@ -1,9 +1,11 @@
-import subprocess
 # protected
 import sys
 # protected
 from pathlib import Path
-
+# protected
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+# protected
+from test_g4f_providers import ProviderTester
 # Do Not Change Above Line#
 import re
 import random
@@ -11,17 +13,12 @@ import os
 from typing import Optional
 from g4f import ChatCompletion, models, Provider
 import autopep8
-import tempfile
 import coverage
-import os
 
-# TODO: make a duplicate as backup and  with filename.bak then overwrite the improved file
-# TODO: Have more visual status view when improvment pprocess is running
-# TODO: Move prompting texts into a prompts.py file
 
 class CodeImprover:
 
-    version: Optional[float] = 3.0
+    version: Optional[float] = 2.8
     script_path: Optional[str] = None
     log_file: Optional[str] = f"{str(Path(__file__).parent)}/changes.txt"
 
@@ -33,44 +30,37 @@ class CodeImprover:
         match = re.search(code_mark, text)
         if match:
             return match.group("code")
-        
 
     def save_changes(self, text: str) -> None:
         with open(self.log_file, "a") as file:
             file.write(text)
         print(f"Changes saved to log {self.log_file}")
 
-    def check_syntax_errors(self, code: str, filename: str = "<string>") -> bool:
+    def check_syntax_errors(self, code: str) -> None:
         try:
-            compile(code, filename, mode="exec")
+            compile(code, "<string>", "exec")
         except SyntaxError as e:
-            raise SyntaxError(f"Syntax Error in {filename}: Line {e.lineno}: {e.msg}")
-        return True
+            print(f"Syntax Error: {e}")
 
     def format_code(self, code: str) -> str:
         return autopep8.fix_code(code)
 
     def generate_coverage_report(self, code: str) -> None:
-        tempfile = tempfile.NamedTemporaryFile(delete=False) # make the temp file and keep it from deleting
-        tempfile.close() # close the tempfile for the os to unlock it
-        tempfile.write(code.encode())# now write the damn file
-        temp_file_path = tempfile.name
-        cov = coverage.Coverage(data_file=tempfile.name)
+        print(f"this is the path {str(Path(__file__).parent)}/temp.py")
+        with open(f"{str(Path(__file__).parent)}/temp.py", "w") as file:
+            file.write(code)
+        cov = coverage.Coverage(data_file=f"{str(Path(__file__).parent)}/temp.py")
         cov.start()
-        subprocess.run(["python", temp_file.name])
+        os.system(f"python {str(Path(__file__).parent)}/temp.py")
         cov.stop()
         cov.save()
-        cov.report(show_missing=True, skip_covered=True, ignore_errors=True)
-        os.remove(tempfile.name)
-        os.remove(".coverage")
-        cov.stop()
-        cov.save()
-        cov.report(show_missing=True, skip_covered=True, ignore_errors=True)
-        os.remove(tempfile.name)
-        os.remove(".coverage")
+        cov.report(show_missing=True,skip_covered=True,ignore_errors=True)
+        os.remove(f"{str(Path(__file__).parent)}/temp.py")
+        os.remove(f"{str(Path(__file__).parent)}/.coverage")
 
     def improve_code(self, path: Optional[str] = None) -> None:
         """Improves the code in a given file or all files in a given directory."""
+
         if self.script_path and os.path.exists(self.script_path):
             path = self.script_path
         else:
@@ -89,9 +79,10 @@ class CodeImprover:
             paths = [str(Path(__file__).parent)]
         for path in paths:
             try:
-                with open(os.path.basename(__file__),"r") as file:
+                print(path)
+                with open(path, "r") as file:
                     code = file.read()
-                
+                # TODO: Move prompting texts into a prompts.py file
                 prompt = f"""
                 You are a pragmatic, procedural, and organized code analyzing and improving agent. 
                 You can ingest, analyze, improve and upgrade scripts.
@@ -142,6 +133,7 @@ class CodeImprover:
                 """
 
                 response = []
+                #provider = self.pick_random_provider()
                 model = models.gpt_35_turbo
                 for chunk in ChatCompletion.create(
                     model=model,
@@ -174,6 +166,20 @@ class CodeImprover:
                 self.save_changes(changes)
             except FileNotFoundError:
                 print("Invalid file path.")
+
+    def pick_random_provider(self):
+        if os.path.exists("live_providers.txt"):
+            with open("live_providers.txt", "r") as file:
+                providers = file.read()
+        else:
+            # Create an instance of ProviderTester with all the providers
+            tester = ProviderTester().main()
+            providers = tester.get_providers()
+        pick = providers[random.randint(0, len(providers) - 1)]
+        if not "error" in pick and pick != "Wewordle":
+            return pick
+        else:
+            return self.pick_random_provider()
 
 if __name__ == "__main__":
     CodeImprover().improve_code()

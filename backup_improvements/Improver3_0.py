@@ -1,3 +1,4 @@
+import argparse
 import subprocess
 import sys
 from pathlib import Path
@@ -26,19 +27,20 @@ import coverage
 class CodeImprover:
     version: Optional[float] = 2.9
     script_path: Optional[str] = None
-    log_file: Optional[str] = f"{str(Path(__file__).parent)}/changes.txt"
+    log_file: str = f"{str(Path(__file__).parent)}/changes.txt"
+    python_mark: Optional[str] = r"```(python|py|)\n(?P<code>[\s\S]+?)\n```"
 
     def __init__(self):
-        self.python_mark: Optional[str] = r"```(python|py|)\n(?P<code>[\s\S]+?)\n```"
+        pass
 
     @staticmethod
-    def read_code(text: str, code_mark: str) -> str:
+    def read_code(text: str, code_mark: str) -> str: # type: ignore
         match = re.search(code_mark, text)
         if match:
             return match.group("code")
 
     def save_changes(self, text: str) -> None:
-        with open(self.log_file, "a") as file:
+        with open(self.log_file, "a") as file: # type: ignore
             file.write(text)
         print(f"Changes saved to log {self.log_file}")
 
@@ -69,31 +71,30 @@ class CodeImprover:
 
     def improve_code(self, path: Optional[str] = None) -> None:
         """Improves the code in a given file or all files in a given directory."""
-        #protected
         if self.script_path and os.path.exists(self.script_path):
             path = self.script_path
         else:
-            path = input("Enter the path of the file you want to improve:(enter to self-improve) ")
-       
-# I fixed it yiiieehaaaa!
-        # BELLOW IS THE UGLIEST IF ELSE STATEMEMT 
-        if path != "":                # I HAVE EVER SEEN ALL BECAUSE  
-            if os.path.isfile(path):                     # SHITTY HUMANS 
-                paths = [path]                                      # MUST HAVE INPUT ;-)
+            parser = argparse.ArgumentParser(description="Improves the code in a given file or all files in a given directory.")
+            parser.add_argument("path", nargs="?", help="The path of the file you want to improve")
+            args = parser.parse_args()
+            path = args.path
+
+        if path != "":
+            if os.path.isfile(path):
+                paths = [path]
             elif os.path.isdir(path):
                 print(os.path.isdir(path))
                 paths = list(Path(path).rglob("*.py"))
             else:
                 print("Invalid path.")
                 return
-        else:   
-            for file_path in glob(f"{path}/*.py"):
+        else:
+            for file_path in glob(os.path.join(path, "*.py")):
                 try:
                     with open(file_path, "r") as file:
                         code = file.read()
 
-                    #protected
-                    prompt = """
+                    prompt = f"""
                     You are a pragmatic, procedural, and organized code analyzing and improving agent. 
                     You can ingest, analyze, improve and upgrade scripts.
                     Rules:
@@ -114,11 +115,10 @@ class CodeImprover:
                     - The 'comment block' at the top of the script is always formatted like this:
                     f'''
                     TODOS:
-                    <here the user places todos he wants implemented>
-                
-                    - The 'comment block' at the bottom of the script is always formatted like this:
+                            <here the user places todos he wants implemented>
                     '''
                     f'''
+                    - The 'comment block' at the bottom of the script is always formatted like this:                     
                     Description:
                         <here the assistant describes script working>
                     Usage:
@@ -129,6 +129,7 @@ class CodeImprover:
                         <here the assistant proposes features>
                     '''
                     """
+
                     improve_task = f"""
                     Tasks:
                     - 1 Refactor the code into a callable class if needed.
@@ -160,18 +161,13 @@ class CodeImprover:
                     code = self.read_code(response, self.python_mark)
 
                     if code:
-                        # Check for syntax errors
                         self.check_syntax_errors(code)
-                        # Format the code
                         code = self.format_code(code)
-                        # Generate a code coverage report
-                        #sself.generate_coverage_report(code)
                         new_file_path = str(Path(path).with_name(
                             f"{Path(path).stem}_generated_{str(self.version).replace('.', '_')}_improvement{Path(path).suffix}"))
                         with open(new_file_path, "w") as file:
                             file.write(code)
                         print(f"Improved code saved to {new_file_path}")
-                    # split off the changes and save them
                     changes = response.split("I made the following changes:")
                     changes = f"I made the following changes in version {self.version}:\n{changes.pop()}"
                     self.save_changes(changes)
