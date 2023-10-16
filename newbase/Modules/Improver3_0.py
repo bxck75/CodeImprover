@@ -10,7 +10,7 @@ from supporting.gpt4free.g4f import ChatCompletion, models, Provider
 import autopep8
 import tempfile
 import coverage
-
+ 
 # TODO: this one has prio above all the first part of the improve method is a chaos of if's and else's and should be re-done.
 # TODO: second most important is the part where the temp file is written in the generate_coverage_report this is because when the tempfile is made the OS locks it and can not be written unless you close it after its made with delete on false the OS releases it the and it can be directly written. i fixed thos ones but it was undone
 # TODO: Its very important that we make our improver 100% bug free becausee to many times i need to manualy fetch the updat from logs.
