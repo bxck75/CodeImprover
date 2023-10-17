@@ -15,7 +15,7 @@ from llama_index.tools.utils import create_schema_from_function
 from llama_index.memory import ConversationBufferMemory, DocumentMemory
 from llama_index.agents import ReActAgent
 
-'''
+f'''
 #Todos
     - first make a tool like the 'python_fun' tool base on a function to search on the search url https://api.python.langchain.com/en/latest/search.html?q=buffer+memory
     - think of more ways to us this documents VectorStore

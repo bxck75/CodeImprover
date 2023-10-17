@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 #protected
 from test_g4f_providers import ProviderTester
-import coverage
+import cov18erage
 import autopep8
 from g4f import ChatCompletion, models, Provider,logging
 from typing import Optional
@@ -86,6 +86,35 @@ class CodeImprover:
             try:
                 with open(path, "r") as file:
                     code = file.read()
+
+
+rom pathlib import Path
+
+def get_input_with_fallback(prompt, fallback):
+    user_input = input(prompt)
+    return user_input if user_input else fallback
+
+path = self.script_path
+if not path or not os.path.exists(path):
+    path = get_input_with_fallback("Enter the path of the file you want to improve (press Enter for self-improvement): ", "")
+
+if path != "":
+    if os.path.isfile(path):
+        paths = [path]
+    elif os.path.isdir(path):
+        paths = list(Path(path).rglob("*.py"))
+    else:
+        print("Invalid path.")
+        return
+else:
+    paths = [str(Path(__file__).resolve())]
+
+for path in paths:
+    try:
+        with open(path, "r") as file:
+            code = file.read()
+
+
 
                 prompt = f"""
                 You are a pragmatic, procedural, and organized code analyzing and improving agent. 
