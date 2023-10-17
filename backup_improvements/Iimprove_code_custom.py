@@ -12,11 +12,16 @@ from typing import Optional
 from g4f import ChatCompletion, models, Provider
 import autopep8
 import coverage
-
+#protected
+'''
+Todo
+Make method of getting file name of improved script back to original name by splitting in _ then taking the part befor the first split and mergin it with the.py ext do this if the name is  longer then 20 characters
+Try to Develop infr_agent.py 
+'''
 
 class CodeImprover:
 
-    version: Optional[float] = 2.8
+    version: Optional[float] = 3.0
     script_path: Optional[str] = None
     log_file: Optional[str] = f"{str(Path(__file__).parent)}/changes.txt"
 
@@ -157,24 +162,35 @@ class CodeImprover:
                 response = "".join(response)
                 code = self.read_code(response, self.python_mark)
                 if code:
-                    # Check for syntax errors
-                    self.check_syntax_errors(code)
+                    try:
+                        # Check for syntax errors
+                        self.check_syntax_errors(code)
+                    except:
+                        print("syntax error")
+
                     # Format the code
                     code = self.format_code(code)
-                    # Generate a code coverage report
-                    self.generate_coverage_report(code)
+
+                    try:
+                        # Generate a code coverage report
+                        self.generate_coverage_report(code)
+                    except:
+                        print("no data to show")
+
                     new_file_path = str(Path(path).with_name(
                         f"{Path(path).stem}_generated_{str(self.version).replace('.', '_')}_improvement{Path(path).suffix}"))
                     with open(new_file_path, "w") as file:
                         file.write(code)
                     print(f"Improved code saved to {new_file_path}")
                 # split off the changes and save them
-                changes = response.split("I made the following changes:")
-                changes = f"I made the following changes in version {self.version}:\n{changes.pop()}"
-                self.save_changes(changes)
+                #changes = response.split("I made the following changes:")
+                #changes = f"I made the following changes in version {self.version}:\n{changes.pop()}"
+                self.save_changes(response)
+
             except FileNotFoundError:
                 print("Invalid file path.")
 
 
 if __name__ == "__main__":
     CodeImprover().improve_code()
+# protected

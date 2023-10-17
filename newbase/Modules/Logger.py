@@ -1,56 +1,50 @@
-#protected
-import os
+def jls_extract_def(self, log_type, log_types, file, message):
+    # Do Not Change Above Line
+    class Logger:
+        version: float = 0.5
+        name: str = 'Logger'
+        log_file: str = 'LOG.txt'
+    
+        def __init__(self):
+            self.log_file = "{Path(__file__).parent / self.log_file}"
+    
+        def log_message(self, message: str, log_type: str = "info"):
+            log_types = ["info", "error", "warning"]
+            if log_type not in log_types:
+                raise ValueError("Invalid log_type. Supported types: 'info', 'error', 'warning'")
+            with open(self.log_file, "a") as file:
+                file.write(f"[{log_type}] {message}\n")
+    
+        def __call__(self, message: str, log_type: str = "info"):
+            self.log_message(message, log_type)
+            log_type = jls_extract_def(self, log_type, log_types, file, message)
+    return log_type
+
+
+           
+
+    # Example of setting a custom log file path:
+    # logger = Logger("custom_log.txt")
+
+"""
+The Logger class provides a basic structure for logging in a Python project.
+It allows you to log messages with different types (info, error, warning) to a specified log file.
+
+Usage:
+logger = Logger()  # You can specify a log file path here as an argument.
+logger.log_message("This is a test log message")
+logger.log_message("This is an error message", "error")
+logger.log_message("This is a warning message", "warning")
+
+Predicted use cases:
+- Logging errors, warnings, and information for debugging and monitoring.
+- Centralized logging for tracking the flow of your Python project.
+
+Proposed features:
+- Log rotation to manage log file size.
+- Option to log to different files based on log type.
+- Logging to remote servers or services.
+
 # protected
-from pathlib import Path
-import re
-import sys
-from typing import Optional
-#TODOS:
-# - always a mandatory comment block for todo's at the top of each script
-# - begin developing and improving a general logger class here.
-#- it needs to be available throughout the project
-#- i should store its logs in a central place but still organized so i caan see what happended where and when
-#- it should be able to log anything from txt to failed api requests to failing ai and everything in between.
-#- it shpould also be easy to digest for agents that have the task of bugg fixing bit also be browsable by humans
-#- please think of a 'all telling' label style log that alsways looks the same but can have an array of different data.
-
-
-class Logger():
-
-    version: Optional[float] = (0.1) 
-    path: Optional[str] = None
-    log_file: Optional[str] = f"{str(Path(__file__).parent)}/Logger_Log.txt"
-
-    """ Mandatory  version, path, log_file and docstring above init with a short description"""
-    def __init__(self):
-        self.name = "Logger";
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    f'''
-    # -aways a mandatory comment block for description ,Usage, Use cases and proposed features at the bottom
-    Description:
-        <here the assistant describes script working>
-    Usage:
-        <here the assistant describes script usage>
-    Predicted use cases:
-        <here the assistant describes use cases>
-    Proposed features:
-        <here the assistant proposes features>
-    '''
+Description:
+"""

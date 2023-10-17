@@ -32,4 +32,14 @@ while prompt != "exit":
     result = StarCoder_agent.run(prompt, remote=True)
     finalresult = OAS_agent.run(result, remote=True)
 print(finalresult)
-    
+#protected
+f'''
+Description:
+    <here the assistant describes script working>
+Usage:
+    <here the assistant describes script usage>
+Predicted use cases:
+    <here the assistant describes use cases>
+Proposed features:
+    <here the assistant proposes features>
+'''

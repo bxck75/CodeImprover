@@ -4,8 +4,15 @@ from bs4 import BeautifulSoup
 #from Code_Refactorer import Code_Refactorer
 from credits import HUGGINGFACE_TOKEN
 
+'''
+Todos
+This class wil be scrapin a set url for python code block snippets and save them into a folder called scraped_blocks
+It must also ad a top comment block for todos in the saved snippets
+i must also add a desciption, usage, use cases and proposed extra features comment block at the bottom og the saved snippets file
+'''
 
 class CodeBlockScraper:
+    version: Optional[float] = 0.1
     def __init__(self, input_source, scraper_on=True):
         self.url = None
         self.input_source = input_source
@@ -54,9 +61,9 @@ class CodeBlockScraper:
         self.single = False  # Set self.single to False to indicate multiple scripts
         self.code_blocks = {"Single Script": content}  # Use a single name for the script
 
-    def blocks_from_file(self, file_path):
+    def blocks_from_file(self):
         # Read code blocks from a file
-        with open(file_path, "r") as f:
+        with open(self.input_filepath, "r") as f:
             content = f.readlines()
             f.close()
 
@@ -90,3 +97,14 @@ class CodeBlockScraper:
                 # Extract the name from the last span within the h3 tag
                 name = h3_tag.find_all("span")[-1].text.strip()
                 # Find the next pre tag within a div
+#protected
+f'''
+Description:
+    <here the assistant describes script working>
+Usage:
+    <here the assistant describes script usage>
+Predicted use cases:
+    <here the assistant describes use cases>
+Proposed features:
+    <here the assistant proposes features>
+'''

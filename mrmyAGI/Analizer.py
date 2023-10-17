@@ -1,33 +1,20 @@
+# TODO: begin male a Analizer class here so we have a 2step process
+# TODO: i would like state of the art stuff if only i where filty rich...but...dirt poor  
 from typing import List
 
 
 class CodeAnalyzer:
-    DEFAULT_ATTRIBUTE_VALUE = None  # Change the default value here
-
     def __init__(self, script: str):
         self.script = script
 
     def analyze(self) -> List[str]:
+        lines = self.script.split("\n")
         imports = []
         classes = []
         methods = []
         variables = []
 
-        lines = self.script.split("\n")
-        in_protected_block = False
-
         for line in lines:
-            line = line.strip()
-            if line == '#protected':
-                in_protected_block = True
-                continue
-            elif line == '#do not change below line#':
-                in_protected_block = False
-                continue
-
-            if in_protected_block:
-                continue
-
             if line.startswith("import") or line.startswith("from"):
                 imports.append(line)
             elif line.startswith("class"):
@@ -42,14 +29,14 @@ class CodeAnalyzer:
 
 if __name__ == "__main__":
     script = '''
-    #do not change above line#
+    #Do Not Change Above Line#
 
     import os
     import sys
 
     #protected
     class MyClass:
-        def __init__(self, name: str):
+        def __init__(self, name):
             self.name = name
 
         def say_hello(self):
@@ -64,7 +51,7 @@ if __name__ == "__main__":
     def another_function():
         print("Another function")
 
-    #do not change below line#
+    #Do Not Change Below Line#
     '''
 
     code_analyzer = CodeAnalyzer(script)

@@ -1,0 +1,237 @@
+# protected
+import sys
+# protected
+from pathlib import Path
+# protected
+
+# Do Not Change Above Line#
+import Logger
+import re
+import random
+import os
+import g4f
+from typing import Optional
+from g4f import ChatCompletion, models, Provider
+import autopep8
+import coverage
+import Logger
+#protected
+'''
+Todos
+improve and make methods for reading the files aand alsways use try: except: aroundn all your self improments so you dont crash!
+Make sure that every Script u improve have the correctly named comment block templates top and bottom.
+Make filenames of improved script back to original and remove old clones when the scripts are improved.
+Try to Develop infr_agent.py 
+'''
+
+class CodeImprover:
+
+ 
+   
+
+
+    def __init__(self):
+        
+        self.python_mark: Optional[str] = r"```(python|py|)\n(?P<code>[\s\S]+?)\n```"
+
+    @staticmethod
+    def read_code(text: str, code_mark: str) -> str:
+        match = re.search(code_mark, text)
+        if match:
+            return match.group("code")
+
+    def save_changes(self, text: str) -> None:
+        try:
+            with open(self.log_file, "a") as file:
+               file.write(text)
+            print(f"Changes saved to log {self.log_file}")
+        except AttributeError as e:
+            print(e)
+            def get_script_name(self, filename: str, e)->str:
+                """
+                Get the Name of the File from which this class is called.
+                :param filename: The Filename from where we want to extract the name.
+                Returns a string containing the name of the calling function or module.
+                >>>get_script_name(__file__)
+                """
+                path = os.path.dirname(filename)
+                for root, dirs, files in os.walk(path):
+                    for file in files:
+                        #print(os.path.join(root, file))    
+                        if os.path.splitext(file)[1][1:] == 'py':
+                            return (os.path.splitext(file)[0])
+                            caller_module=inspect.stack()[2].frame.f_globals['__name__']
+                            break
+                        raise Exception('Please set the attribute `log_file` before saving changes.')
+
+
+
+            print("i failed logging!")
+    def check_syntax_errors(self, code: str, filename: str = "<string>") -> bool:
+        """
+        Check for syntax errors in the given code.
+
+        Args:
+            code (str): The code to be checked for syntax errors.
+            filename (str, optional): The name of the file from which the code originates. Defaults to "<string>".
+
+        Returns:
+            bool: True if the code has no syntax errors, False otherwise.
+        """
+        try:
+            compile(code, filename, mode="exec")
+        except SyntaxError as e:
+            raise SyntaxError(f"Syntax Error in {filename}: Line {e.lineno}: {e.msg}")
+        return True
+
+    def format_code(self, code: str) -> str:
+        return autopep8.fix_code(code)
+
+    def generate_coverage_report(self, code: str) -> None:
+        print(f"this is the path {str(Path(__file__).parent)}/temp.py")
+        with open(f"{str(Path(__file__).parent)}/temp.py", "w") as file:
+            file.write(code)
+        cov = coverage.Coverage(data_file=f"{str(Path(__file__).parent)}/temp.py")
+        cov.start()
+        os.system(f"python {str(Path(__file__).parent)}/temp.py")
+        cov.stop()
+        cov.save()
+        cov.report(show_missing=True,skip_covered=True,ignore_errors=True)
+        os.remove(f"{str(Path(__file__).parent)}/temp.py")
+        os.remove(f"{str(Path(__file__).parent)}/.coverage")
+
+    def improve_code(self, path: Optional[str] = None) -> None:
+        """Improves the code in a given file or all files in a given directory."""
+
+        if self.script_path and os.path.exists(self.script_path):
+            path = self.script_path
+        else:
+            path = input(
+                "Enter the path of the file you want to improve:(enter to self-improve) ")
+            path = path.replace("'","")
+        if path != "":
+            if os.path.isfile(path):
+                paths = [path]
+            elif os.path.isdir(path):
+                paths = list(Path(path).rglob("*.py"))
+            else:
+                print("Invalid path.")
+                return
+        else:
+            paths = [str(Path(__file__).parent)]
+        for path in paths:
+            try:
+                print(path)
+                with open(path, "r") as file:
+                    try:
+
+                        code = file.read()
+
+                    except UnicodeDecodeError as e:
+                        print("the temp.py is not a readable file and should have been deleted oing that now!")
+                        print("this was left by your coverage debugging attempt!")
+                        os.remove("temp.py")
+                # TODO: Move prompting texts into a prompts.py file
+                prompt = f"""
+                You are a pragmatic, procedural, and organized code analyzing and improving agent. 
+                You can ingest, analyze, improve and upgrade scripts.
+                Rules:
+                - Always start the new script with the imports above '#Do Not Change Above Line#'
+                - Don't make a new comment block at the end of the script if one exists, just add or subtract info as needed.
+                - Don't change or move methods, classes or variables that have '#protected' above the definition.
+                - Don't remove any functionality only add functionality.
+                - Don't remove the imports at the top of the script.
+                - Don't add type hints to kwargs.
+                - Don't remove license comments.
+                - The 'Description:' in the bottom 'comment block' is where you describe the script
+                - The 'Usage:' description in the bottom 'comment block' is where you explain the usage.
+                - The 'Use cases:' in the bottom 'comment block' is where you list predicted use cases.
+                - The 'Proposed extra features:' in the bottom 'comment block' is where you list proposed new features.
+                - The 'TODOS:' in the top 'comment block' is where the user will list the todo's.
+                - Create or Update the 'version' variable by adding 0.1 to it.
+                - List the changes you made starting with 'I made the following changes:'.
+                - The 'comment block' at the top of the script is always formatted like this:
+                    f'''
+                    TODOS:
+                        <here the user places todos he wants implemented>
+                    '''
+                - The 'comment block' at the bottom of the script is always formatted like this:
+                    f'''
+                    Description:
+                        <here the assistant describes script working>
+                    Usage:
+                        <here the assistant describes script usage>
+                    Predicted use cases:
+                        <here the assistant describes use cases>
+                    Proposed features:
+                        <here the assistant proposes features>
+                    '''
+                """
+                improve_task = f"""
+                Tasks:
+                - 1 Refactor the code into a callable class if needed.
+                - 2 Add a __name__ == "__main__" if needed.
+                - 3 Implement the items the user listed under 'TODOS:' in the top 'comment block'.
+                - 4 Add or change variables, methods, enums, classes and logic to improve and enhance the script.
+                - 5 Add type hints and doc string to every method and class.
+                - 6 Make sure every improved scripts gets a filename conform its classname_version.py
+                - 7 Update the bottom 'comment block' with relevant information.
+                - 8 Every improved script must have a import Logger above the class and these except the Logger have field'version: Optional[float] = 0.1
+                                                                                                                    name = "Why dontu finay fix yousel a sigh in browser and fileIO" 
+                                                                                                                    log = Logger()
+                                                                                                                    script_path: Optional[str] = Path(__file__).parent
+                                                                                                                    ' reflecting its own data
+                - Remove version numbers from filenames else we wil have troube importing classes als if now error arise remove the old script after improvin and making the improved clone
+                Now improve the code in this file:
+                ```py
+                {code}
+                ```
+                """
+
+                response = []
+                model = models.gpt_35_turbo
+                for chunk in ChatCompletion.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": prompt},
+                        {"role": "user", "content": improve_task},
+                    ],
+                    timeout=6000,
+                    stream=False,
+                ):
+                    response.append(chunk)
+                    print(chunk, end="", flush=True)
+                response = "".join(response)
+                code = self.read_code(response, self.python_mark)
+                if code:
+                    try:
+                        # Check for syntax errors
+                        self.check_syntax_errors(code)
+                    except:
+                        print("syntax error")
+
+                    # Format the code
+                    code = self.format_code(code)
+
+                    try:
+                        # Generate a code coverage report
+                        self.generate_coverage_report(code)
+                    except:
+                        print("no data to show")
+
+                    new_file_path = str(Path(path).with_name(
+                        f"{Path(path).stem}{Path(path).suffix}"))
+                    with open(new_file_path, "w") as file:
+                        file.write(code)
+                    print(f"Improved code saved to {new_file_path}")
+                # split off the changes and save them
+                #changes = response.split("I made the following changes:")
+                #changes = f"I made the following changes in version {self.version}:\n{changes.pop()}"
+                self.save_changes(response)
+
+            except FileNotFoundError:
+                print("Invalid file path.")
+
+
+if __name__ == "__main__":
+    CodeImprover().improve_code()

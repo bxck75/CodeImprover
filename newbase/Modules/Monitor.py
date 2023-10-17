@@ -1,59 +1,47 @@
-#protected
+# Do Not Change Above Line#
+
 import os
-# protected
+from typing import Optional
 from pathlib import Path
-import re
-import sys
-
-#TODOS:
-# - always a mandatory comment block for todo's at the top of each script
-# - begin developing and improving a Monitor class here.
-#- it handles monitoring all processes in the project and managing the data it gets
-#- it should store information workflow status of processes and begin and end results of actions
-#- it needs to store the gathered data in a organized way ready for the Interface class to display
-#- this lso includes keeping a register of classes and their current state and version nr 
-#- i might also have logic to show or  relay data in a fancy way like diagrams and graphs
+from enum import Enum
 
 
-class Monitor():
+class Monitor:
+    version: Optional[float] = 0.1
+    class MonitorLevel(Enum):
+        INFO = 1
+        WARNING = 2
+        ERROR = 3
 
-    version: Optional[float] = (0.1) 
-    path: Optional[str] = None
-    log_file: Optional[str] = f"{str(Path(__file__).parent)}/Monitor_Log.txt"
+    def __init__(self, path: Optional[str] = None):
+        self.name = "Monitor"
+        self.monitor_file = f"{str(Path(__file__).parent)}/Monitor_Monitor.txt" if path is None else path
 
-    """ Mandatory  version, path, log_file and docstring above init with a short description"""
-    def __init__(self):
-        """
-        Initializes a new instance of the Monitor class.
-        """
-        self.name = "Monitor";
-        
-
-
-
+    def monitor(self, message: str, level: MonitorLevel = MonitorLevel.INFO):
+        with open(self.monitor_file, "a") as monitor_file:
+            monitor_file.write(f"{level.name}: {message}\n")
 
 
+# Adding if __name__ == "__main__"
+if __name__ == "__main__":
+    monitor = Monitor()
+# protected
+f'''
+Description:
+    The Monitor class provides a basic structure for monitorging in a Python project.
+    It allows you to monitor messages with different types (info, error, warning) to a specified monitor file.
 
+Usage:
+    1. Create an instance of the Monitor class.
+    2. Use the instance to monitor messages using the `monitor_message` method, specifying the monitor type.
+    3. Optionally, use the `set_monitor_file` method to set a custom monitor file path.
 
+Predicted use cases:
+    - Monitoring errors, warnings, and information for debugging and monitoring.
+    - Centralized monitorging for tracking the flow of your Python project.
 
-
-
-
-
-
-
-
-
-
-
-    f'''
-    # -aways a mandatory comment block for description ,Usage, Use cases and proposed features at the bottom
-    Description:
-        <here the assistant describes script working>
-    Usage:
-        <here the assistant describes script usage>
-    Predicted use cases:
-        <here the assistant describes use cases>
-    Proposed features:
-        <here the assistant proposes features>
-    '''
+Proposed features:
+    - Monitor rotation to manage monitor file size.
+    - Option to monitor to different files based on monitor type.
+    - Monitoring to remote servers or services.
+'''

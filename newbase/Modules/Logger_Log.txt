@@ -1,0 +1,12 @@
+INFO: This is an information message.
+WARNING: This is a warning message.
+ERROR: This is an error message.
+[info] This is a test log message
+[error] This is an error message
+[warning] This is a warning message
+[info] This is a test log message
+[error] This is an error message
+[warning] This is a warning message
+[info] This is a test log message
+[error] This is an error message
+[warning] This is a warning message
